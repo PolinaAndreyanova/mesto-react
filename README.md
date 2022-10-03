@@ -1,6 +1,6 @@
 # Проект: Место-React
 
-## Посмотреть: 
+## Посмотреть: https://polinaandreyanova.github.io/mesto-react
 
 ### Обзор
 
