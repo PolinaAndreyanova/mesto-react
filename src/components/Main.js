@@ -35,18 +35,16 @@ function Main(props) {
       </section>
 
       <section className="cards">
-        {cards.map((card) => 
+        {cards.map((card) => (
           <Card 
             key={card._id} 
             name={card.name} 
             link={card.link} 
             likes={card.likes.length}
             onCardClick={props.onCardImage}
-          /> )}
+          />) )}
       </section>
     </main>
-
-
   );
 }
 
