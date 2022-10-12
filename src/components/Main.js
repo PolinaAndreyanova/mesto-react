@@ -1,20 +1,17 @@
-import React, {useState, useEffect } from "react";
+import React, {useState, useEffect, useContext} from "react";
+import CurrentUserContext from "../contexts/CurrentUserContext";
 import api from "../utils/Api";
 import Card from "./Card";
 
 function Main(props) {
-  const [userName, setUserName] = useState('');
-  const [userDescription, setUserDescription] = useState('');
-  const [userAvatar, setUserAvatar] = useState('');
   const [cards, setCards] = useState([]);
 
+  const currentUser = useContext(CurrentUserContext);
+
   useEffect(() => {
-    Promise.all([api.getUserInfo(), api.getInitialCards()])
-      .then(([userData, cardsData]) => {
-        setUserName(userData.name);
-        setUserDescription(userData.about);
-        setUserAvatar(userData.avatar);
-        setCards(cardsData.reverse());
+    api.getInitialCards()
+      .then((cardsData) => {
+        setCards(cardsData);
       })
       .catch(err => console.log(`Ошибка: ${err}`));
   }, []);
@@ -24,11 +21,11 @@ function Main(props) {
       <section className="profile">
         <div className="profile__avatar-content">
           <button type="button" className="profile__avatar-edit-button" onClick={props.onEditAvatar}></button>
-          <img src={userAvatar} alt="Аватар" className="profile__avatar" />
+          <img src={currentUser.avatar} alt="Аватар" className="profile__avatar" />
         </div>
         <div className="profile__info">
-          <h1 className="profile__name">{userName}</h1>
-          <p className="profile__status">{userDescription}</p>
+          <h1 className="profile__name">{currentUser.name}</h1>
+          <p className="profile__status">{currentUser.about}</p>
           <button type="button" className="profile__edit-button" onClick={props.onEditProfile}></button>
         </div>
         <button type="button" className="profile__add-button" onClick={props.onAddPlace}></button>
@@ -40,7 +37,8 @@ function Main(props) {
             key={card._id} 
             name={card.name} 
             link={card.link} 
-            likes={card.likes.length}
+            owner={card.owner}
+            likes={card.likes}
             onCardClick={props.onCardImage}
           />) )}
       </section>
