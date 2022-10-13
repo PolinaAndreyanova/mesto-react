@@ -4,6 +4,7 @@ import CurrentUserContext from '../contexts/CurrentUserContext';
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
+import EditProfilePopup from './EditProfilePopup';
 import PopupWithForm from './PopupWithForm';
 import ImagePopup from './ImagePopup';
 
@@ -18,6 +19,15 @@ function App() {
 
   const handleCardClick = (card) => {
     setSelectedCard(card);
+  };
+
+  const handleUpdateUser = (newUserData) => {
+    api.editProfile(newUserData.name, newUserData.about)
+      .then((userData) => {
+        setCurrentUser(userData);
+        setEditProfilePopupOpen(false);
+      })
+      .catch(err => console.log(`Ошибка: ${err}`));
   };
 
   useEffect(() => {
@@ -42,38 +52,7 @@ function App() {
 
         <Footer />
 
-        <PopupWithForm
-          name='edit-profile'
-          title='Редактировать профиль'
-          formName='info'
-          btnText='Сохранить'
-          isOpen={isEditProfilePopupOpen}
-          onClose={() => setEditProfilePopupOpen(false)}>
-          <input
-            required
-            id="name-input"
-            type="text"
-            className="popup__input popup__input_type_name"
-            name="name"
-            defaultValue="Жак-Ив Кусто"
-            minLength="2"
-            maxLength="40"
-            placeholder="Имя"
-          />
-          <p className="popup__error name-input-error"></p>
-          <input
-            required
-            id="status-input"
-            type="text"
-            className="popup__input popup__input_type_status"
-            name="status"
-            defaultValue="Исследователь океана"
-            minLength="2"
-            maxLength="200"
-            placeholder="Статус"
-          />
-          <p className="popup__error status-input-error"></p>
-        </PopupWithForm>
+        <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={() => setEditProfilePopupOpen(false)} onUpdateUser={handleUpdateUser} />
 
         <PopupWithForm
           name='add-profile'
