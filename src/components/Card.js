@@ -3,6 +3,8 @@ import CurrentUserContext from '../contexts/CurrentUserContext';
 
 function Card(props) {
   const handleClick = () => { props.onCardClick(props) }; 
+  const handleLikeClick = () => { props.onCardLike(props) };
+  const handleDeleteClick = () => { props.onCardDelete(props) };
 
   const currentUser = useContext(CurrentUserContext);
 
@@ -16,11 +18,11 @@ function Card(props) {
       <div className="card__information">
         <h2 className="card__title">{props.name}</h2>
         <div className="card__like">
-          <button type="button" className={`card__like-button${isLiked && ' card__like-button_active'}`}></button>
+          <button type="button" className={`card__like-button${isLiked ? ' card__like-button_active' : ''}`} onClick={handleLikeClick} ></button>
           <p className="card__like-count">{props.likes.length}</p>
         </div>
       </div>
-      <button type="button" className="card__trash-button" disabled={!isOwn && 'disabled'} style={isOwn ? {visibility: 'visible'} : {}}></button>
+      <button type="button" className="card__trash-button" disabled={!isOwn && 'disabled'} style={isOwn ? {visibility: 'visible'} : {}} onClick={handleDeleteClick}></button>
     </article>
   );
 }

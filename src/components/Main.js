@@ -8,6 +8,31 @@ function Main(props) {
 
   const currentUser = useContext(CurrentUserContext);
 
+  function handleCardLike(card) {
+    const isLiked = card.likes.some(i => i._id === currentUser._id);
+    
+    (!isLiked) ?
+      api.likeCard(card._id)
+        .then((newCard) => {
+          setCards(cards.map(c => c._id === newCard._id ? newCard : c))
+        })
+        .catch(err => console.log(`Ошибка: ${err}`)) :
+
+      api.cancelLikeCard(card._id)
+        .then((newCard) => {
+          setCards(cards.map(c => c._id === newCard._id ? newCard : c))
+        })
+        .catch(err => console.log(`Ошибка: ${err}`));
+  }
+
+  function handleCardDelete(card) {
+    api.deleteCard(card._id)
+      .then(() => {
+        setCards(cards.filter(c => c._id !== card._id))
+      })
+      .catch(err => console.log(`Ошибка: ${err}`));
+  }
+
   useEffect(() => {
     api.getInitialCards()
       .then((cardsData) => {
@@ -35,11 +60,14 @@ function Main(props) {
         {cards.map((card) => (
           <Card 
             key={card._id} 
+            _id={card._id}
             name={card.name} 
             link={card.link} 
             owner={card.owner}
             likes={card.likes}
             onCardClick={props.onCardImage}
+            onCardLike={handleCardLike}
+            onCardDelete={handleCardDelete}
           />) )}
       </section>
     </main>
